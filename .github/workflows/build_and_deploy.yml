@@ -1,4 +1,4 @@
-name: Build and Deploy Services
+name: Build and Deploy Services-approved
 
 on:
   push:
