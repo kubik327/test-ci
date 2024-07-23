@@ -47,7 +47,7 @@ jobs:
       - name: Build
         if: steps.check_changes.outputs.service_changed == 'true'
         run: |
-          docker build --build-arg ENV=${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }} APP=${{ matrix.service }}
+          docker build --build-arg APP=${{ matrix.service }}
 #          cache-from: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE }}/${{ matrix.service }}:buildcache
 #          cache-to: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE }}/${{ matrix.service }}:buildcache,mode=max
 
