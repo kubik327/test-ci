@@ -22,12 +22,12 @@ jobs:
         id: generate-filters
         run: |
           FILTERS=$(echo '${{ env.SERVICES }}' | jq -c 'map({key: ., value: ["cmd/" + . + "/**", "proto/**", "pkg/**", ".github/workflows/**", "Makefile"]}) | from_entries')
-          echo "filters=${FILTERS}" >> $GITHUB_OUTPUT
+          echo "filters=$FILTERS" >> $GITHUB_OUTPUT
 
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          filters: ${{ fromJson(steps.generate-filters.outputs.filters) }}
+          filters: ${{ steps.generate-filters.outputs.filters }}
 
       - id: set-matrix
         run: |
