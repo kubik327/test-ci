@@ -21,6 +21,7 @@ jobs:
         with:
           filters: |
             hello: ['cmd/hello/**', 'proto/**', 'pkg/**', '.github/workflows/**', 'Makefile']
+            bye: ['cmd/bye/**', 'proto/**', 'pkg/**', '.github/workflows/**', 'Makefile']
 
   build:
     needs: changes
@@ -29,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [hello]
+        service: [hello, bye]
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
