@@ -37,6 +37,7 @@ jobs:
   build:
     needs: changes
     if: ${{ needs.changes.outputs.matrix != '[]' }}
+    environment: test-ci-sercrets
     runs-on: ubuntu-latest
     strategy:
       matrix:
