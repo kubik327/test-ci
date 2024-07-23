@@ -32,7 +32,7 @@ jobs:
       matrix:
         service: [hello, bye]
       fail-fast: false
-    if: ${{ needs.changes.outputs[matrix.service] == 'true' }}
+    if: ${{ needs.changes.outputs[strategy.matrix.service] == 'true' }}
     steps:
       - uses: actions/checkout@v2
 
