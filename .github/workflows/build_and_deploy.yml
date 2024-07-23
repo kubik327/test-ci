@@ -32,6 +32,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.matrix != '[]' }}
     runs-on: ubuntu-latest
+    environment: test-ci-sercrets
     strategy:
       matrix:
         service: ${{fromJson(needs.changes.outputs.matrix)}}
