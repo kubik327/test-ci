@@ -14,11 +14,11 @@ FROM alpine:latest
 
 ARG APP
 
-RUN apk add --no-cache tzdata && apk --no-cache add ca-certificates
-RUN wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem -O /etc/ssl/certs/global-bundle.pem && update-ca-certificates
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.15 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe
+#RUN apk add --no-cache tzdata && apk --no-cache add ca-certificates
+#RUN wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem -O /etc/ssl/certs/global-bundle.pem && update-ca-certificates
+#RUN GRPC_HEALTH_PROBE_VERSION=v0.4.15 && \
+#    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+#    chmod +x /bin/grpc_health_probe
 
 COPY --from=builder /app/bin/app /bin/app
 COPY --from=builder /app/cmd/$APP/config/config.yml /configs/
