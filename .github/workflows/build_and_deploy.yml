@@ -22,7 +22,6 @@ jobs:
           filters: |
             hello: ['cmd/hello/**', 'proto/**', 'pkg/**', '.github/workflows/**', 'Makefile']
             bye: ['cmd/bye/**', 'proto/**', 'pkg/**', '.github/workflows/**', 'Makefile']
-            # Add new services here following the same pattern
       - id: set-matrix
         run: |
           SERVICES=$(echo '${{ toJSON(steps.filter.outputs) }}' | jq -c 'to_entries | map(select(.value == "true")) | map(.key)')
@@ -54,4 +53,3 @@ jobs:
           tags: ${{ matrix.service }}:${{ github.sha }}-${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
           build-args: |
             APP=${{ matrix.service }}
-# comment
