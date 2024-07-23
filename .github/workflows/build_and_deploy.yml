@@ -8,6 +8,7 @@ on:
 
 env:
   DOCKER_REGISTRY: docker.io
+  SERVICES: '["hello", "bye"]'  # Add new services here
 
 jobs:
   changes:
@@ -16,34 +17,41 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
+
+      - name: Generate filters
+        id: generate-filters
+        run: |
+          FILTERS=$(echo ${{ env.SERVICES }} | jq -c 'map({key: ., value: ["cmd/" + . + "/**", "proto/**", "pkg/**", ".github/workflows/**", "Makefile"]}) | from_entries')
+          echo "filters=${FILTERS}" >> $GITHUB_OUTPUT
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          filters: |
-            hello: ['cmd/hello/**', 'proto/**', 'pkg/**', '.github/workflows/**', 'Makefile']
-            bye: ['cmd/bye/**', 'proto/**', 'pkg/**', '.github/workflows/**', 'Makefile']
+          filters: ${{ steps.generate-filters.outputs.filters }}
+
       - id: set-matrix
         run: |
-          SERVICES=$(echo '${{ toJSON(steps.filter.outputs) }}' | jq -c 'to_entries | map(select(.value == "true")) | map(.key)')
-          echo "matrix=${SERVICES}" >> $GITHUB_OUTPUT
+          CHANGED_SERVICES=$(echo '${{ toJSON(steps.filter.outputs) }}' | jq -c 'to_entries | map(select(.value == "true")) | map(.key)')
+          echo "matrix=${CHANGED_SERVICES}" >> $GITHUB_OUTPUT
 
   build:
     needs: changes
     if: ${{ needs.changes.outputs.matrix != '[]' }}
     runs-on: ubuntu-latest
-    environment: test-ci-sercrets
     strategy:
       matrix:
         service: ${{fromJson(needs.changes.outputs.matrix)}}
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
